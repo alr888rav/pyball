@@ -1,6 +1,6 @@
 import pygame
 
-from Lose import Lose
+from lose import Lose
 from balls import Ball
 from goal import Goal
 from human import Human
@@ -22,7 +22,7 @@ class Game:
     LOSE = 4
     MENU = 5
     EXIT = 6
-    GOAL_TIME = 2 * FPS # 2 sec
+    GOAL_TIME = 2 * FPS  # 2 sec
     WIN_TIME = 3 * FPS
     LOSE_TIME = 3 * FPS
     MAX_SCORE = 3
@@ -38,7 +38,7 @@ class Game:
         self.win = Win(0)
         self.lose = Lose(0)
         self.menu = Menu()
-        self.mouse = (0,0)
+        self.mouse = (0, 0)
         self.sounds = Sounds()
         self.sounds.music()
         self.status = Game.MENU
@@ -70,30 +70,31 @@ class Game:
     def update(self):
 
         if self.status == Game.MENU:
-            if self.menu.test(self.mouse[0], self.mouse[1]) == Menu.MENU_PLAY: # menu -> play
+            if self.menu.test(self.mouse[0], self.mouse[1]) == Menu.MENU_PLAY:  # menu -> play
                 self.reset()
+                self.robot.level = 2
                 self.status = Game.PLAY
                 self.sounds.click()
-            elif self.menu.test(self.mouse[0], self.mouse[1]) == Menu.MENU_EXIT: # menu -> exit
+            elif self.menu.test(self.mouse[0], self.mouse[1]) == Menu.MENU_EXIT:  # menu -> exit
                 self.status = Game.EXIT
                 self.sounds.click()
         # goal -> continue
         elif self.status == Game.GOAL and self.goal.update() == 0:
-            if self.robot.score >= Game.MAX_SCORE: # goal -> end game
+            if self.robot.score >= Game.MAX_SCORE:  # goal -> end game
                 self.lose_start()
                 self.sounds.lose()
-            elif self.human.score >= Game.MAX_SCORE: # goal -> end game
+            elif self.human.score >= Game.MAX_SCORE:  # goal -> end game
                 self.win_start()
                 self.sounds.win()
             else:
-                self.status = Game.PLAY # goal -> continue play
+                self.status = Game.PLAY  # goal -> continue play
         # process win/lose
         elif self.status == Game.WIN:
             if self.win.update() == 0:
-                self.status = Game.MENU # win -> menu
+                self.status = Game.MENU  # win -> menu
         elif self.status == Game.LOSE:
             if self.lose.update() == 0:
-                self.status = Game.MENU # lose -> menu
+                self.status = Game.MENU  # lose -> menu
         elif self.status == Game.PLAY:
             # calc next
             self.ball.move()
@@ -128,10 +129,10 @@ class Game:
             # robot update
             if self.robot.level == 0 and self.robot.top() < SCREEN_HEIGHT / 10 or self.robot.bottom() > SCREEN_HEIGHT * 9 / 10:
                 self.robot.toggle_y()
-            elif self.robot.level == 1:
+            elif self.robot.level >= 1:
                 self.robot.ai(self.ball)
 
-        self.mouse = (0,0)
+        self.mouse = (0, 0)
 
     def draw_score(self, screen):
         text = str(self.human.score) + ' : ' + str(self.robot.score)

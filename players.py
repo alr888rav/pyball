@@ -17,6 +17,9 @@ class Player:
         self._rect.top = 0
         self._rect = self._rect.move(x, y)
 
+    def get_pos(self):
+        return self._rect
+
     def height(self):
         return self._rect.height
 
